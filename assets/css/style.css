@@ -74,6 +74,8 @@ button { font: inherit; }
 }
 
 /* Fixed, once-drawn starfield behind every page */
+main { overflow-x: clip; }
+
 .starfield { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
 /* ---------- Layout ---------- */
@@ -440,7 +442,7 @@ button { font: inherit; }
   .people { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1080px) {
   .nav-toggle { display: block; }
   .site-nav {
     position: fixed; inset: 0; z-index: 110; display: flex; flex-direction: column; justify-content: center;
@@ -459,8 +461,11 @@ button { font: inherit; }
   .nav-open .nav-list li:nth-child(4) { transition-delay: 0.12s; }
   .nav-open .nav-list li:nth-child(5) { transition-delay: 0.16s; }
   .nav-open .nav-list li:nth-child(6) { transition-delay: 0.2s; }
+  .nav-open .nav-list li:nth-child(7) { transition-delay: 0.24s; }
   .nav-open { overflow: hidden; }
+}
 
+@media (max-width: 900px) {
   .about-grid, .chart-grid, .two-col { grid-template-columns: 1fr; }
   .planet-stage { max-width: 420px; order: -1; }
   .chart-sticky { position: relative; top: 0; }
@@ -502,3 +507,158 @@ button { font: inherit; }
 .gallery-grid.uniform { grid-template-columns: repeat(3, 1fr); grid-auto-rows: clamp(200px, 20vw, 280px); }
 @media (max-width: 900px) { .gallery-grid.uniform { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; } }
 @media (max-width: 480px) { .gallery-grid.uniform { grid-template-columns: 1fr; grid-auto-rows: 220px; } }
+
+/* ==========================================================================
+   Mission map — planets as destinations (homepage, after the hero)
+   Without JS (or on small screens) the worlds form a simple grid; JS adds
+   .is-live and positions them on tilted orbits around the sun.
+   ========================================================================== */
+.system { position: relative; padding: clamp(96px, 11vw, 150px) 0 clamp(40px, 6vw, 80px); }
+.system-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+.orbit-toggle {
+  flex: none; display: inline-flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 18px;
+  border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted);
+  font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: color 0.2s, border-color 0.2s;
+}
+.orbit-toggle:hover { color: var(--text); border-color: var(--lavender); }
+.orbit-toggle svg { width: 14px; height: 14px; }
+.orbit-toggle .i-play, .orbit-toggle[aria-pressed="true"] .i-pause { display: none; }
+.orbit-toggle[aria-pressed="true"] .i-play { display: inline; }
+.orbit-toggle[hidden] { display: none; }
+
+.orbit-map { position: relative; max-width: 1320px; margin: clamp(32px, 5vw, 56px) auto 0; padding: 0 var(--gutter); }
+.worlds { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px 20px; }
+.world a {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none; color: var(--text);
+  border-radius: 12px; padding: 6px;
+}
+.world-label { text-align: center; white-space: nowrap; line-height: 1.25; text-shadow: 0 1px 10px var(--navy-950), 0 0 2px var(--navy-950); }
+.world-label strong { display: block; font-size: 0.98rem; font-weight: 700; transition: color 0.25s; }
+.world-label small { display: block; margin-top: 2px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.world a:hover .world-label strong, .world a:focus-visible .world-label strong { color: var(--cyan); }
+.world a:hover .world-body, .world a:focus-visible .world-body { transform: scale(1.12); }
+
+/* Planets: CSS-only surfaces; the inset shadow is the night side. --s is the diameter. */
+.world { --s: 70px; --k: 1; }
+.world-body {
+  position: relative; display: block; width: calc(var(--s) * var(--k)); height: calc(var(--s) * var(--k)); border-radius: 50%;
+  transition: transform 0.45s var(--ease);
+  box-shadow: inset calc(var(--s) * -0.2) calc(var(--s) * -0.14) calc(var(--s) * 0.24) rgba(2, 3, 15, 0.88);
+}
+.world:nth-child(1) { --s: 62px; }
+.world:nth-child(2) { --s: 72px; }
+.world:nth-child(3) { --s: 80px; }
+.world:nth-child(4) { --s: 58px; }
+.world:nth-child(5) { --s: 76px; }
+.world:nth-child(6) { --s: 64px; }
+.w-about { background: repeating-linear-gradient(172deg, #4a3fb2 0 9px, #6250c9 9px 14px, #8a76e6 14px 17px, #3c3fa8 17px 26px) 0 0 / 200% 100%; animation: surface 30s linear infinite; }
+.w-events { background: radial-gradient(circle at 62% 58%, rgba(255,255,255,.35) 0 6%, transparent 7%), radial-gradient(ellipse at 30% 70%, #1f8a6e 0 14%, transparent 15%), radial-gradient(circle at 32% 30%, #b8f6fc, #3fb6cc 42%, #134f7c 82%); }
+.w-achieve { background: repeating-linear-gradient(8deg, rgba(122,88,16,.35) 0 6px, transparent 6px 15px), radial-gradient(circle at 34% 30%, #fff1c4, #e6c36a 42%, #8a6516 88%); }
+.w-achieve::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 190%; height: 44%; border-radius: 50%;
+  border: 3px solid rgba(230, 195, 106, 0.75); box-shadow: 0 0 0 4px rgba(230, 195, 106, 0.16);
+  transform: translate(-50%, -50%) rotate(-16deg);
+}
+.w-notice { background: radial-gradient(ellipse at 50% 12%, #fff 0 18%, transparent 19%), radial-gradient(circle at 36% 30%, #f4f6ff, #b9c7f2 46%, #4f5fa0 92%); }
+.w-notice::after { content: ""; position: absolute; right: -16px; top: -6px; width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f1eefc, #6a6d9d); }
+.w-gallery { background: radial-gradient(circle at 70% 64%, #f0b8ff 0 8%, transparent 9%), radial-gradient(ellipse at 30% 44%, #c58cf0 0 16%, transparent 17%), repeating-linear-gradient(160deg, #7e4fd0 0 10px, #a46be0 10px 18px, #5a35a8 18px 30px) 0 0 / 200% 100%; animation: surface 44s linear infinite; }
+.w-contact { background: radial-gradient(circle at 35% 30%, #4f86e8, #1d3592 55%, #0b1240);
+  box-shadow: inset calc(var(--s) * -0.2) calc(var(--s) * -0.14) calc(var(--s) * 0.24) rgba(2, 3, 15, 0.88), 0 0 0 2px rgba(103, 227, 242, 0.35), 0 0 22px rgba(103, 227, 242, 0.2); }
+@keyframes surface { to { background-position-x: -200%; } }
+
+.orbit-rings, .sun { display: none; }
+
+/* Live orrery (JS, wide screens) */
+.orbit-map.is-live { height: clamp(480px, 42vw, 580px); padding: 0; margin-top: 8px; }
+.is-live .orbit-rings { display: block; position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.is-live .orbit-rings .ring { fill: none; stroke: var(--lavender); stroke-opacity: 0.2; stroke-width: 1; transition: stroke-dashoffset 2.2s var(--ease), stroke-opacity 0.3s, stroke 0.3s; }
+.is-live .orbit-rings .ring.is-active { stroke: var(--cyan); stroke-opacity: 0.75; }
+.is-live .sun {
+  display: block; position: absolute; left: 50%; top: 50%; z-index: 10; width: 100px; height: 100px; margin: -50px 0 0 -50px;
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 42% 40%, #fffaf0 0, #ffe6a8 22%, #e6c36a 52%, #c27a26 100%);
+  box-shadow: 0 0 40px 8px rgba(230, 195, 106, 0.32), 0 0 120px 30px rgba(230, 160, 70, 0.1);
+}
+.is-live .worlds { display: block; position: absolute; inset: 0; }
+.is-live .world { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; }
+.is-live .world a { position: absolute; left: 0; top: 0; padding: 0; transform: translate(-50%, calc(var(--s) * var(--k) / -2)); }
+.is-live .world-label { transition: opacity 0.3s; }
+.is-live.has-active .world:not(.is-active) .world-label { opacity: 0.45; }
+
+/* ==========================================================================
+   Trajectory — achievements, a launch path that draws with scroll
+   ========================================================================== */
+.trajectory {
+  background: radial-gradient(ellipse 60% 70% at 90% 0%, rgba(118, 85, 214, 0.2), transparent 70%), #02030f;
+  border-top: 1px solid var(--line); overflow: hidden;
+}
+.traj-head { max-width: 760px; }
+.traj { --p: 1; margin-top: clamp(48px, 6vw, 80px); }
+.traj-svg { width: 100%; height: auto; overflow: visible; }
+.traj-guide { fill: none; stroke: var(--lavender); stroke-opacity: 0.25; stroke-width: 1.5; stroke-dasharray: 2 8; }
+.traj-path { fill: none; stroke: var(--cyan); stroke-width: 2.5; stroke-linecap: round; }
+.traj-node .core { fill: var(--gold); stroke: var(--gold); stroke-width: 2; transition: fill 0.4s, stroke 0.4s; }
+.traj-node .halo { fill: var(--gold); opacity: 0.25; transform-box: fill-box; transform-origin: center; transition: opacity 0.5s, transform 0.6s var(--ease); }
+.traj-probe { display: none; }
+.probe-core { fill: #fff; }
+.probe-glow { fill: var(--cyan); opacity: 0.28; }
+
+.milestones { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; position: relative; }
+.milestones li { padding-top: 22px; border-top: 1px solid var(--line); }
+.m-index { display: block; font-size: 2.6rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--gold); transition: color 0.5s; }
+.m-cat { margin-top: 18px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); }
+.milestones h3 { margin-top: 8px; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); transition: color 0.5s; }
+.milestones li p:last-child { margin-top: 8px; color: var(--muted); font-size: 0.95rem; }
+
+/* Scroll-driven state (JS adds .is-live; everything stays readable before it is reached) */
+.traj.is-live .traj-probe { display: inline; }
+.traj.is-live .traj-node .core { fill: #02030f; stroke: var(--lavender); }
+.traj.is-live .traj-node .halo { opacity: 0; transform: scale(0.4); }
+.traj.is-live .traj-node.is-reached .core { fill: var(--gold); stroke: var(--gold); }
+.traj.is-live .traj-node.is-reached .halo { opacity: 0.25; transform: none; }
+.traj.is-live .m-index { color: var(--lavender); }
+.traj.is-live h3 { color: var(--muted); }
+.traj.is-live li.is-reached .m-index { color: var(--gold); }
+.traj.is-live li.is-reached h3 { color: var(--text); }
+
+/* Achievements page: category grid */
+.ach-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+.ach-cat { padding: 36px 32px 40px; border-bottom: 1px solid var(--line); }
+.ach-cat:nth-child(3n+1) { padding-left: 0; }
+.ach-cat:nth-child(3n) { padding-right: 0; }
+.ach-cat:not(:nth-child(3n)) { border-right: 1px solid var(--line); }
+.ach-cat svg { width: 44px; height: 44px; margin-bottom: 18px; }
+.ach-cat h3 { font-size: 1.25rem; font-weight: 700; }
+.ach-cat > p { margin-top: 8px; color: var(--muted); font-size: 0.97rem; }
+.ach-cat ul { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 0.92rem; }
+.ach-cat li { padding-left: 18px; position: relative; color: var(--muted); }
+.ach-cat li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid var(--gold); }
+
+@media (max-width: 1080px) {
+  .orbit-map.is-live { height: 500px; }
+  .is-live .world { --k: 0.8; }
+}
+@media (max-width: 900px) {
+  .ach-grid { grid-template-columns: 1fr 1fr; }
+  .ach-cat, .ach-cat:nth-child(n) { padding: 32px 24px 36px 0; border-right: 0; }
+  .ach-cat:nth-child(odd) { border-right: 1px solid var(--line); }
+  .ach-cat:nth-child(even) { padding-left: 24px; padding-right: 0; }
+}
+@media (max-width: 760px) {
+  .system-head { display: block; }
+  .worlds { grid-template-columns: 1fr 1fr; gap: 28px 12px; }
+  .world { --k: 0.85; }
+  .traj-svg { display: none; }
+  .milestones { grid-template-columns: 1fr; gap: 0; margin-top: 0; padding-left: 34px; }
+  .milestones::before, .milestones::after { content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--line); }
+  .milestones::after { background: var(--cyan); transform-origin: top; transform: scaleY(var(--p)); }
+  .milestones li { position: relative; padding: 0 0 36px; border: 0; }
+  .milestones li::before { content: ""; position: absolute; left: -33px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 2px solid var(--gold); z-index: 1; transition: background 0.4s, border-color 0.4s; }
+  .traj.is-live .milestones li::before { background: #02030f; border-color: var(--lavender); }
+  .traj.is-live .milestones li.is-reached::before { background: var(--gold); border-color: var(--gold); }
+  .m-index { font-size: 1.9rem; }
+}
+@media (max-width: 560px) {
+  .ach-grid { grid-template-columns: 1fr; }
+  .ach-cat:nth-child(n) { padding: 28px 0 32px; border-right: 0; }
+}

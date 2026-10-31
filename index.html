@@ -34,6 +34,7 @@
           <li><a href="index.html" aria-current="page">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="events.html">Events</a></li>
+          <li><a href="achievements.html">Achievements</a></li>
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="announcements.html">Announcements</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -44,8 +45,10 @@
 
   <ol class="journey" aria-label="Page sections">
     <li><a href="#top" data-journey="top"><span>Galaxy</span></a></li>
+    <li><a href="#system" data-journey="system"><span>Mission map</span></a></li>
     <li><a href="#about" data-journey="about"><span>Our world</span></a></li>
     <li><a href="#events" data-journey="events"><span>Orbits</span></a></li>
+    <li><a href="#achievements" data-journey="achievements"><span>Trajectory</span></a></li>
     <li><a href="#announcements" data-journey="announcements"><span>Star chart</span></a></li>
     <li><a href="#gallery" data-journey="gallery"><span>Nebula</span></a></li>
     <li><a href="#horizon" data-journey="horizon"><span>Horizon</span></a></li>
@@ -66,13 +69,40 @@
           </h1>
           <p class="lead" data-reveal style="--d:4">Placeholder introduction: one or two sentences describing what makes this college a place to learn, build and explore. Replace with the institution's own words.</p>
           <div class="btn-row" data-reveal style="--d:5">
-            <a class="btn btn-primary" href="#events">Explore Events
+            <a class="btn btn-primary" href="#system">Explore
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             <a class="btn btn-ghost" href="#about">Discover More</a>
           </div>
         </div>
       </div>
-      <a class="scroll-cue" href="#about" data-reveal="fade" style="--d:8">Scroll to explore<i></i></a>
+      <a class="scroll-cue" href="#system" data-reveal="fade" style="--d:8">Scroll to explore<i></i></a>
+    </section>
+
+    <!-- 01 · Mission map: planets as destinations -->
+    <section class="system" id="system" data-section aria-labelledby="system-title">
+      <div class="container system-head">
+        <div>
+          <p class="eyebrow" data-reveal>01 — Mission map</p>
+          <h2 class="h-section" id="system-title" data-reveal style="--d:1">Choose a destination.</h2>
+          <p class="lead" data-reveal style="--d:2">Every part of campus life has its own world. Select a planet to travel there, or use the menu at the top at any time.</p>
+        </div>
+        <button class="orbit-toggle" type="button" aria-pressed="false" data-orbit-toggle hidden>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><g class="i-pause"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></g><path class="i-play" d="M7 5l12 7-12 7z"/></svg>
+          <span>Pause orbits</span>
+        </button>
+      </div>
+      <div class="orbit-map" data-orbit-map>
+        <svg class="orbit-rings" data-inview aria-hidden="true"></svg>
+        <div class="sun" aria-hidden="true"></div>
+        <ul class="worlds" aria-label="Destinations">
+          <li class="world" data-r=".30"><a href="#about"><span class="world-body w-about"></span><span class="world-label"><strong>About</strong><small>Who we are</small></span></a></li>
+          <li class="world" data-r=".44"><a href="#events"><span class="world-body w-events"></span><span class="world-label"><strong>Events</strong><small>What&rsquo;s happening</small></span></a></li>
+          <li class="world" data-r=".58"><a href="#achievements"><span class="world-body w-achieve"></span><span class="world-label"><strong>Achievements</strong><small>Milestones</small></span></a></li>
+          <li class="world" data-r=".72"><a href="#announcements"><span class="world-body w-notice"></span><span class="world-label"><strong>Announcements</strong><small>Latest notices</small></span></a></li>
+          <li class="world" data-r=".86"><a href="#gallery"><span class="world-body w-gallery"></span><span class="world-label"><strong>Gallery</strong><small>Campus life</small></span></a></li>
+          <li class="world" data-r="1"><a href="contact.html"><span class="world-body w-contact"></span><span class="world-label"><strong>Contact</strong><small>Get in touch</small></span></a></li>
+        </ul>
+      </div>
     </section>
 
     <!-- 02 · A world comes into view: about -->
@@ -197,7 +227,37 @@
       </div>
     </section>
 
-    <!-- 04 · Star chart: highlights & announcements (light section) -->
+    <!-- 04 · Trajectory: achievements -->
+    <section class="section trajectory" id="achievements" data-section data-trajectory>
+      <div class="container">
+        <div class="traj-head">
+          <p class="eyebrow" data-reveal>04 — Trajectory</p>
+          <h2 class="h-section" data-reveal style="--d:1">Milestones &amp; achievements</h2>
+          <p class="lead" data-reveal style="--d:2">A record of what our community has accomplished. Each point on this path is a slot for a verified achievement; none have been filled in yet.</p>
+        </div>
+        <div class="traj" data-traj>
+          <svg class="traj-svg" viewBox="0 0 1200 240" aria-hidden="true">
+            <path class="traj-guide" d="M0 228 C 260 228 430 206 600 146 S 960 34 1200 16"/>
+            <path class="traj-path" d="M0 228 C 260 228 430 206 600 146 S 960 34 1200 16"/>
+            <g class="traj-node" data-x="150"><circle class="halo" r="18"/><circle class="core" r="6"/></g>
+            <g class="traj-node" data-x="450"><circle class="halo" r="18"/><circle class="core" r="6"/></g>
+            <g class="traj-node" data-x="750"><circle class="halo" r="18"/><circle class="core" r="6"/></g>
+            <g class="traj-node" data-x="1050"><circle class="halo" r="18"/><circle class="core" r="6"/></g>
+            <g class="traj-probe"><circle r="14" class="probe-glow"/><circle r="4.5" class="probe-core"/></g>
+          </svg>
+          <ol class="milestones">
+            <li><span class="m-index">01</span><p class="m-cat">Academics</p><h3>Academic milestone</h3><p>Add a verified academic achievement with its year and a link to the source.</p></li>
+            <li><span class="m-index">02</span><p class="m-cat">Research &amp; innovation</p><h3>Research milestone</h3><p>Add a publication, patent, grant or project outcome once confirmed.</p></li>
+            <li><span class="m-index">03</span><p class="m-cat">Sports</p><h3>Sporting milestone</h3><p>Add a tournament result or team achievement with the event name.</p></li>
+            <li><span class="m-index">04</span><p class="m-cat">Arts &amp; culture</p><h3>Cultural milestone</h3><p>Add a recognition for a club, performance or student creative work.</p></li>
+          </ol>
+        </div>
+        <div class="btn-row" data-reveal><a class="text-link" href="achievements.html">All achievements
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </div>
+    </section>
+
+    <!-- 05 · Star chart: announcements (light section) -->
     <section class="section on-light" id="announcements" data-section data-theme="light">
       <div class="container chart-grid">
         <div class="chart-sticky" data-reveal="scale" data-inview data-chart>
@@ -230,9 +290,9 @@
         </div>
 
         <div>
-          <p class="eyebrow" data-reveal>04 — Star chart</p>
-          <h2 class="h-section" data-reveal style="--d:1">Highlights &amp; announcements</h2>
-          <p class="lead" data-reveal style="--d:2">The latest updates, mapped like stars. All items below are placeholders.</p>
+          <p class="eyebrow" data-reveal>05 — Star chart</p>
+          <h2 class="h-section" data-reveal style="--d:1">Announcements &amp; updates</h2>
+          <p class="lead" data-reveal style="--d:2">Notices and upcoming dates, mapped like stars. All items below are placeholders.</p>
           <ol class="notice-list">
             <li class="notice" data-notice="0" data-reveal>
               <div class="notice-meta"><span class="chip gold">Admissions</span><time>Date TBA</time></div>
@@ -266,12 +326,12 @@
       </div>
     </section>
 
-    <!-- 05 · Nebula: gallery -->
+    <!-- 06 · Nebula: gallery -->
     <section class="section" id="gallery" data-section>
       <div class="container">
         <div class="section-head">
           <div>
-            <p class="eyebrow" data-reveal>05 — Nebula</p>
+            <p class="eyebrow" data-reveal>06 — Nebula</p>
             <h2 class="h-section" data-reveal style="--d:1">Moments from campus</h2>
             <p class="lead" data-reveal style="--d:2">A glimpse of campus life. Images below are placeholders awaiting real photography.</p>
           </div>
@@ -290,10 +350,10 @@
       </div>
     </section>
 
-    <!-- 06 · Horizon: closing call to action -->
+    <!-- 07 · Horizon: closing call to action -->
     <section class="horizon" id="horizon" data-section data-rise>
       <div class="container">
-        <p class="eyebrow" data-reveal>06 — Horizon</p>
+        <p class="eyebrow" data-reveal>07 — Horizon</p>
         <h2 class="h-section" data-reveal style="--d:1">Your journey starts here.</h2>
         <p class="lead" data-reveal style="--d:2">Placeholder call to action: invite prospective students and visitors to get in touch or plan a visit.</p>
         <div class="btn-row" data-reveal style="--d:3">
@@ -324,7 +384,7 @@
         </div>
         <div>
           <h2>Explore</h2>
-          <ul><li><a href="about.html">About</a></li><li><a href="events.html">Events</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="announcements.html">Announcements</a></li></ul>
+          <ul><li><a href="about.html">About</a></li><li><a href="events.html">Events</a></li><li><a href="achievements.html">Achievements</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="announcements.html">Announcements</a></li></ul>
         </div>
         <div>
           <h2>Students</h2>

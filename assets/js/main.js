@@ -286,8 +286,195 @@
     notices.forEach((n) => io.observe(n));
   }
 
+  /* ---------- Mission map: planets orbit the sun; each planet is a link ----------
+     Planets share one rotation (fixed 60° spacing, so labels never collide) and are
+     projected onto tilted ellipses. Depth = sin(angle): planets in front of the sun
+     grow and sit above it, those behind shrink and pass beneath it. The tilt opens
+     up as the section scrolls into view. Orbits pause on hover/focus, via the
+     toggle, when off-screen, and never move with reduced motion. */
+  function initOrbitMap() {
+    const map = document.querySelector('[data-orbit-map]');
+    if (!map) return;
+    const svg = map.querySelector('.orbit-rings');
+    const worlds = [...map.querySelectorAll('.world')];
+    const toggle = document.querySelector('[data-orbit-toggle]');
+    const gridMQ = matchMedia('(max-width: 760px)');
+    const NS = 'http://www.w3.org/2000/svg';
+    const step = (Math.PI * 2) / worlds.length;
+    const SPEED = 0.045; // rad/s, about 2.3 minutes per revolution
+
+    const rings = worlds.map((w, i) => {
+      const e = document.createElementNS(NS, 'ellipse');
+      e.setAttribute('class', 'ring draw');
+      e.setAttribute('pathLength', '1');
+      e.style.setProperty('--d', i);
+      svg.appendChild(e);
+      return e;
+    });
+
+    let W = 0, H = 0, angle = 0.35, tilt = 0.3;
+    let visible = false, hover = false, userPaused = false, raf = 0, last = 0;
+
+    const live = () => !gridMQ.matches;
+    const moving = () => live() && visible && !hover && !userPaused && !reduce();
+
+    const measure = () => {
+      W = map.clientWidth; H = map.clientHeight;
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    };
+
+    const layout = () => {
+      const cx = W / 2, cy = H / 2;
+      const R = Math.min(W / 2 - 90, H * 1.25);
+      worlds.forEach((w, i) => {
+        const rx = +w.dataset.r * R, ry = rx * tilt;
+        const a = angle + i * step;
+        const depth = Math.sin(a);
+        const x = cx + Math.cos(a) * rx, y = cy + depth * ry;
+        const s = 0.78 + 0.22 * (depth + 1) / 2;
+        w.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${s.toFixed(3)})`;
+        w.style.zIndex = depth > 0 ? 20 + Math.round(depth * 10) : 1 + Math.round((depth + 1) * 4);
+        const ring = rings[i];
+        ring.setAttribute('cx', cx); ring.setAttribute('cy', cy);
+        ring.setAttribute('rx', rx.toFixed(1)); ring.setAttribute('ry', ry.toFixed(1));
+      });
+    };
+
+    const scrollTilt = () => {
+      if (reduce()) { tilt = 0.3; return; }
+      const r = map.getBoundingClientRect();
+      const vh = window.innerHeight;
+      tilt = 0.12 + 0.2 * clamp((vh - r.top) / (vh * 0.85));
+    };
+
+    const frame = (t) => {
+      raf = 0;
+      if (!live()) return;
+      const dt = last ? Math.min((t - last) / 1000, 0.1) : 0;
+      last = t;
+      if (moving()) angle += dt * SPEED;
+      layout();
+      if (moving()) raf = requestAnimationFrame(frame);
+      else last = 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+
+    const setMode = () => {
+      const on = live();
+      map.classList.toggle('is-live', on);
+      if (toggle) toggle.hidden = !on || reduce();
+      if (on) { measure(); scrollTilt(); layout(); kick(); }
+      else worlds.forEach((w) => { w.style.transform = ''; w.style.zIndex = ''; });
+    };
+
+    // Highlight a world and its orbit while hovered or focused; pause the system.
+    const activate = (w) => {
+      worlds.forEach((x, i) => {
+        x.classList.toggle('is-active', x === w);
+        rings[i].classList.toggle('is-active', x === w);
+      });
+      map.classList.toggle('has-active', !!w);
+    };
+    worlds.forEach((w) => {
+      const a = w.querySelector('a');
+      a.addEventListener('pointerenter', () => activate(w));
+      a.addEventListener('pointerleave', () => activate(null));
+      a.addEventListener('focus', () => activate(w));
+      a.addEventListener('blur', () => activate(null));
+    });
+    map.addEventListener('pointerenter', () => { hover = true; });
+    map.addEventListener('pointerleave', () => { hover = false; kick(); });
+    map.addEventListener('focusin', () => { hover = true; });
+    map.addEventListener('focusout', (e) => { if (!map.contains(e.relatedTarget)) { hover = false; kick(); } });
+
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        userPaused = !userPaused;
+        toggle.setAttribute('aria-pressed', String(userPaused));
+        toggle.querySelector('span').textContent = userPaused ? 'Resume orbits' : 'Pause orbits';
+        kick();
+      });
+    }
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; kick(); }, { rootMargin: '80px 0px' }).observe(map);
+    } else visible = true;
+
+    window.addEventListener('scroll', () => { if (visible && live()) { scrollTilt(); kick(); } }, { passive: true });
+    let rt;
+    window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (live()) measure(); kick(); }, 120); });
+    gridMQ.addEventListener('change', setMode);
+    reduceMQ.addEventListener('change', setMode);
+    setMode();
+  }
+
+  /* ---------- Trajectory: the launch path draws with scroll and lights milestones ----------
+     Progress only moves forward, so nothing un-draws when scrolling back up. */
+  function initTrajectory() {
+    const traj = document.querySelector('[data-traj]');
+    if (!traj) return;
+    const path = traj.querySelector('.traj-path');
+    const probe = traj.querySelector('.traj-probe');
+    const nodes = [...traj.querySelectorAll('.traj-node')];
+    const items = [...traj.querySelectorAll('.milestones > li')];
+    if (reduce() || !path || typeof path.getTotalLength !== 'function') return; // static, fully drawn
+
+    // On narrow screens the SVG is hidden; milestones are spaced evenly down a vertical line.
+    const listMQ = matchMedia('(max-width: 760px)');
+    const listStops = items.map((_, i) => (i + 0.15) / items.length);
+    let L = 0, stops = listStops;
+    try {
+      L = path.getTotalLength();
+      // Find where along the path each node's x falls, so nodes sit above their columns.
+      stops = nodes.map((n) => {
+        const tx = +n.dataset.x;
+        let lo = 0, hi = L;
+        for (let k = 0; k < 24; k++) {
+          const mid = (lo + hi) / 2;
+          if (path.getPointAtLength(mid).x < tx) lo = mid; else hi = mid;
+        }
+        const pt = path.getPointAtLength(lo);
+        n.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})`);
+        return lo / L;
+      });
+    } catch (err) { L = 0; } // path not rendered (some browsers): list mode still works
+    const pointAt = (len) => { try { return path.getPointAtLength(len); } catch (err) { return { x: 0, y: 0 }; } };
+
+    path.style.strokeDasharray = L;
+    traj.classList.add('is-live');
+    let p = -1;
+    const set = (np) => {
+      if (np <= p) return;
+      p = np;
+      traj.style.setProperty('--p', p.toFixed(3));
+      if (L) {
+        path.style.strokeDashoffset = (L * (1 - p)).toFixed(1);
+        const pt = pointAt(L * p);
+        probe.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})`);
+      }
+      const at = listMQ.matches || !L ? listStops : stops;
+      items.forEach((li, i) => {
+        const on = p >= at[i] - 0.004;
+        li.classList.toggle('is-reached', on);
+        nodes[i] && nodes[i].classList.toggle('is-reached', on);
+      });
+    };
+    set(0);
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const r = traj.getBoundingClientRect();
+      const vh = window.innerHeight;
+      set(clamp((vh * 0.85 - r.top) / (r.height + vh * 0.25)));
+    };
+    window.addEventListener('scroll', () => { if (!ticking && p < 1) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+
   /* ---------- Mobile navigation overlay ---------- */
   function initNav() {
+    const navMQ = matchMedia('(max-width: 1080px)');
     const toggle = document.querySelector('.nav-toggle');
     const nav = document.getElementById('site-nav');
     if (!toggle || !nav) return;
@@ -305,7 +492,7 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && document.body.classList.contains('nav-open')) { setOpen(false); toggle.focus(); }
     });
-    smallMQ.addEventListener('change', (e) => { if (!e.matches) setOpen(false); });
+    navMQ.addEventListener('change', (e) => { if (!e.matches) setOpen(false); });
   }
 
   /* ---------- Events page: category filter ---------- */
@@ -395,6 +582,8 @@
   initStarfield();
   initGalaxy();
   initTwinkles();
+  initOrbitMap(); // before reveals: it creates the orbit rings that draw in
+  initTrajectory();
   initReveals();
   initScrollEffects();
   initJourney();
