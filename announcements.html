@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Announcements — GNITS</title>
+  <meta name="description" content="Placeholder description for GNITS: programmes, events, announcements and campus life.">
+  <meta name="theme-color" content="#04061a">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>
+    // Hide reveal targets only when JS runs; fail open if main.js never initialises.
+    document.documentElement.classList.add('js');
+    setTimeout(function () { if (!window.__celestialReady) document.documentElement.classList.remove('js'); }, 2500);
+  </script>
+  <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <canvas class="starfield" aria-hidden="true"></canvas>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html" aria-label="GNITS home">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9" fill="#c9bff7"/><path d="M20 11a9 9 0 0 1 0 18z" fill="#7655d6"/><ellipse cx="20" cy="20" rx="18" ry="6" fill="none" stroke="#67e3f2" stroke-width="1.6" transform="rotate(-24 20 20)"/></svg>
+        <span class="brand-name">GNITS<small>Logo placeholder</small></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu"><span></span><span></span><span></span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <ul class="nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="announcements.html" aria-current="page">Announcements</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero" id="top">
+      <svg class="deco" viewBox="0 0 400 400" data-inview aria-hidden="true">
+        <circle class="draw" pathLength="1" cx="200" cy="200" r="185" fill="none" stroke="#c9bff7" stroke-opacity=".25"/>
+        <polyline class="draw" pathLength="1" points="70,300 140,210 230,240 270,130 340,80" fill="none" stroke="#67e3f2" stroke-opacity=".7" stroke-width="1.5" style="--d:2"/>
+        <circle class="pop" cx="70" cy="300" r="5" fill="#fff" style="--d:1"/><circle class="pop" cx="140" cy="210" r="4" fill="#fff" style="--d:2"/>
+        <circle class="pop" cx="230" cy="240" r="6" fill="#e6c36a" style="--d:3"/><circle class="pop" cx="270" cy="130" r="4" fill="#fff" style="--d:4"/>
+        <circle class="pop" cx="340" cy="80" r="7" fill="#fff" style="--d:5"/>
+      </svg>
+      <div class="container">
+        <ol class="breadcrumb" data-reveal="fade"><li><a href="index.html">Home</a></li><li aria-current="page">Announcements</li></ol>
+        <p class="eyebrow" data-reveal style="--d:1;margin-top:28px">Announcements</p>
+        <h1 data-reveal style="--d:2">News from the observatory.</h1>
+        <p class="lead" data-reveal style="--d:3">Official notices, highlights and updates. All entries are placeholders awaiting verified content.</p>
+      </div>
+    </section>
+
+    <section class="section on-light">
+      <div class="container" style="max-width:880px">
+        <ol class="notice-list" style="margin-top:0">
+          <li class="notice" data-reveal><div class="notice-meta"><span class="chip gold">Admissions</span><time>Date TBA</time></div><h3>Admissions announcement placeholder</h3><p>Summarise key dates and link to the full admissions notice.</p></li>
+          <li class="notice" data-reveal><div class="notice-meta"><span class="chip ">Upcoming</span><time>Date TBA</time></div><h3>Upcoming event highlight</h3><p>Feature one event that deserves extra attention this month.</p></li>
+          <li class="notice" data-reveal><div class="notice-meta"><span class="chip gold">Achievement</span><time>Date TBA</time></div><h3>Student or faculty achievement</h3><p>Add a verified achievement with a short description and source.</p></li>
+          <li class="notice" data-reveal><div class="notice-meta"><span class="chip ">Notice</span><time>Date TBA</time></div><h3>Academic calendar update</h3><p>Placeholder for timetable, examination or holiday notices.</p></li>
+          <li class="notice" data-reveal><div class="notice-meta"><span class="chip ">Opportunity</span><time>Date TBA</time></div><h3>Call for volunteers or applications</h3><p>Describe the opportunity, eligibility and how to apply.</p></li>
+          <li class="notice" data-reveal><div class="notice-meta"><span class="chip ">Notice</span><time>Date TBA</time></div><h3>Facilities or services update</h3><p>Placeholder for library, hostel, transport or other service updates.</p></li>
+          <li class="notice" data-reveal><div class="notice-meta"><span class="chip ">Archive</span><time>Date TBA</time></div><h3>Older announcement placeholder</h3><p>Move past announcements here once they are no longer current.</p></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html" aria-label="GNITS home">
+            <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="9" fill="#c9bff7"/><path d="M20 11a9 9 0 0 1 0 18z" fill="#7655d6"/><ellipse cx="20" cy="20" rx="18" ry="6" fill="none" stroke="#67e3f2" stroke-width="1.6" transform="rotate(-24 20 20)"/></svg>
+            <span class="brand-name">GNITS</span>
+          </a>
+          <p>Placeholder one-line description of the college.</p>
+          <div class="social">
+            <a href="#" aria-label="Instagram (link to be added)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+            <a href="#" aria-label="YouTube (link to be added)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg></a>
+            <a href="#" aria-label="LinkedIn (link to be added)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg></a>
+            <a href="#" aria-label="X (link to be added)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h2>Explore</h2>
+          <ul><li><a href="about.html">About</a></li><li><a href="events.html">Events</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="announcements.html">Announcements</a></li></ul>
+        </div>
+        <div>
+          <h2>Students</h2>
+          <ul><li><a href="announcements.html">Notices</a></li><li><a href="events.html">Clubs &amp; activities</a></li><li><a href="contact.html">Admissions enquiry</a></li></ul>
+        </div>
+        <div>
+          <h2>Contact</h2>
+          <ul>
+            <li>[Campus address placeholder]</li>
+            <li><a href="mailto:contact@example.edu">contact@example.edu</a> (placeholder)</li>
+            <li>[Phone number placeholder]</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span data-year>2026</span> GNITS. All rights reserved.</p>
+        <p><a href="#top">Back to top ↑</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
